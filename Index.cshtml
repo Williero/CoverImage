@@ -1,0 +1,233 @@
+﻿
+@using System.Net
+
+@*@model IEnumerable<uncovered.Models.CoverImage.WebImage>*@
+@*@model <uncovered.ViewModels.ProductWebImages>*@
+@{
+    ViewBag.Title = "Details";
+}
+
+<div id="wrapper" >
+
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+            </li>
+            @foreach (var image in Model.WebImages)
+            {
+                <li>
+                    <a href="@String.Format("#js-scroll-to-cover-info{0}", @image.Id)">@image.Source</a>
+                </li>
+            }   
+        </ul>
+    </div>
+
+   
+
+    <div id="page-content-wrapper">
+
+        <div id="product-metadata" >
+            <div class="col-lg-12">
+            <div id="product-details">
+            <ul id="productlist" align=center>
+                @if (Model.Product != null)
+                {
+                    <h3 class="text-center">@Model.Product.Title</h3>
+                    <li><p class="text-center">@Model.Product.OnSaleDate.ToString("MM/dd/yyyy")</p></li>
+                    <li><p class="text-center">@Model.Product.Format</p></li>
+                    if (Model.Product.Contributors != null)
+                    {
+                        foreach (var contributor in Model.Product.Contributors)
+                        {
+                        <p class="text-center">@contributor.DisplayName</p>
+                        }
+                    }
+                }
+                else
+                {
+                    <p>Product metadata not found</p>
+                }
+             
+             </ul>
+            </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+
+            @foreach (var image in Model.WebImages)
+            {
+                <div class="row" id="@String.Format("cover-info{0}", @image.Id)">
+                    
+                    <div class="col-lg-12">
+                        <hr />
+                        <div class="col-md-6">
+                            @if (image.HttpStatus == System.Net.HttpStatusCode.NotFound || image.ImageUrl == null)
+                            {
+                                <img src="@Url.Content("http://placehold.it/423x648&text=cover+not+found")" />
+                            }
+                            else
+                            {
+                                <img src="@Url.Content(image.ImageUrl)" />
+                            }
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="input-group">
+                                <input type="text" id="@String.Format("imageurl{0}", @image.Id)" value="@image.ImageUrl" class="form-control" />
+                                <span class="input-group-addon copy-to-clipboard" data-clipboard-text="@image.ImageUrl" data-copied-hint="Copied Successfully" data-copied-from-id="@String.Format("imageurl{0}", @image.Id)">Copy</span>
+                            </div>
+
+                            <!-- header info -->
+                            <div class="header-detail">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="@String.Format("#req-headers{0}", @image.Id)">
+                                            <h6>Header Details</h6>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="@String.Format("req-headers{0}", @image.Id)" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        @if (image.Headers != null)
+                                        {
+                                            <ul>
+                                                <li>ResponseCode : @image.HttpStatusCode @image.HttpStatus</li>
+                                                @foreach (var item in image.Headers)
+                                                {
+                                                    <li>@item.Key : @item.Value</li>
+                                            }
+                                            </ul>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+
+ 
+                            <div class="action-items">
+                                <p>Image Problem?</p>
+                                @if (image.Source == "static.harpercollins.com")
+                                {
+                                    <button id="btnPurgeAkamai" class="btn btn-embossed btn-primary btn-wide">Issue Purge Request</button><span id="purgeResultMessageAkamai"></span>
+                                    <p>If this image is missing or incorrect, the correct image should be pulled from DAM and posted for distribution and reprocessing.</p>
+                                }
+                                else if (image.Source == "Supadu CDN")
+                                {
+                                    <p>If this image is missing or incorrect, the correct image should be pulled from DAM and posted for distribution and reprocessing.</p>
+                                }
+                                else if (image.Source == "i.harperapps.com")
+                                {
+                                    <p>i.harperapps.com sources its images directly from static.harpercollins.com.  When an image is updated on static.harpercollins.com, the updated image will be available on i.harperapps.com automatically.  Please note that images are cached on i.harperapps.com to ensure optimal performance, it may take several hours to 1 day for the server to recognize the new image.  </p>
+                                    <p>
+                                        If the image at static.harpercollins.com appears correct, but this image appears to not have updated yet you may issue a request to purge the cache for this image.  
+                                    </p>
+                                    <button id="btnPurgeHarperApps" class="btn btn-embossed btn-primary btn-wide">Issue Purge Request</button><span id="purgeResultMessageHarperApps"></span>
+                                }
+                                else if (image.Source == "LibreDigital Datapipe")
+                                {
+                                    <p>
+                                        This image is source from LibreDigital, an image will only be available for a physical product.  
+                                    </p>
+                                    <p>
+                                        If this image is incorrect, please contact the internal parties responsible for managing assets at LibreDigital.
+                                    </p>
+                                }
+                                
+                               <!-- 
+                                   <button class="btn btn-embossed btn-primary btn-wide">YES</button>
+                                   <button class="btn btn-embossed btn-default btn-wide">NO</button>
+                                -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <h3>Some Other Stuff Here ... Possibly?</h3>
+                <p>For now this section is here purely to add some content to the page so there is something after the last image to make it less odd when smoooth scroll to last image on page. </p>
+             </div>    
+        </div>
+    </div>
+</div>
+    
+
+
+
+
+
+@section scripts
+{
+   
+    <script type="text/javascript">
+        var isbn13 = '@Model.Isbn13';
+        $(document).ready(function () {
+            
+            // smooth scroll 
+            $('a[href^="#js-scroll-to-"]').on('click', function (e) {
+                e.preventDefault();
+
+                //var target = this.hash;
+                var target = this.hash.replace("js-scroll-to-", "");
+                $target = $(target);
+
+                $('html, body').stop().animate({
+                    'scrollTop': $target.offset().top
+                }, 900, 'swing', function () {
+                    window.location.hash = target;
+                });
+            });
+
+
+            $("#btnPurgeAkamai").click(function () {
+                var json = { "Target": "Akamai", "Isbn13": isbn13 };
+                var url = '/coverimage/purge';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    async: false,
+                    contentType: "application/json",
+                    data: JSON.stringify(json),
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus, errorThrown);
+                        $("#purgeResultMessageAkamai").text("Purge Request Failed");
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        console.log('success_function');
+                        console.log(data);
+                        $("#purgeResultMessageAkamai").text("Purge Issued");
+                    }
+                });
+            });
+        });
+
+        // zeroclipboard
+        ZeroClipboard.config({ moviePath: '@Url.Content("~/Content/ZeroClipboard.swf")' });
+        var client = new ZeroClipboard($(".copy-to-clipboard"));
+
+        client.on("load", function (client) {
+
+            this.on("complete", function (client, args) {
+                
+                var $this = $(this); 
+                var copiedfrom = $('#' + $this.data('copied-from-id'));
+                copiedfrom.text($this.data('copied-hint'));
+                copiedfrom.val($this.data('copied-hint'));
+                copiedfrom.delay(800).queue(function () {
+                    copiedfrom.val($this.data('clipboard-text'));
+                    copiedfrom.dequeue();
+                });
+                
+
+                
+            });
+        });
+
+
+        
+    </script>
+}

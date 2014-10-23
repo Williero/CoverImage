@@ -1,0 +1,188 @@
+﻿@model uncovered.Models.CoverImage.CoverImageSearchForm
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<div id="page-content-wrapper">
+    <div class="container">
+        <div class="row">
+           <div class= "my-search">
+                <div class="logo" align=center>
+		 <img src="Content/Images/UncoveredLogo_01.svg">
+		   </div>
+               
+                @using (Html.BeginForm("Search", "CoverImage", FormMethod.Post, new { role = "form" }))
+                {
+                    <div class="col-md-8 col-md-offset-2 col-md-9">
+                    <div class="input-group">
+                       
+                        @Html.LabelFor(model => model.Isbn13)
+                        @Html.TextBoxFor(model => model.Isbn13, new { @class = "form-control" })
+                        
+                        <input type="text" class="form-control input-hg"   id="input-filter" size="30" placeholder="Search by ISBN 13" style="text-align: ; height:48px">
+                        <span class="input-group-btn">
+                        <button class="btn btn-hg btn-default" type="button">Submit</button>
+                        </span>
+                    </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!------<div class="row">
+	        <div class= "most-search">
+	        <hr> 
+		<div class="col-md-4" align="center"  style="border-right: 1px solid #e9ede5";>
+		 
+		<h4>Statistics</h4>	
+		<div id="canvas-holder">
+		<canvas id="canvas1" width="500" height="500"/> 
+	   </div>
+
+
+	<script>
+
+		var doughnutData = [
+				{
+					value: 300,
+					color:"#F7464A",
+					highlight: "#FF5A5E",
+					label: "General Books"
+				},
+				{
+					value: 110,
+					color: "#46BFBD",
+					highlight: "#5AD3D1",
+					label: "Young Adult"
+				},
+				{
+					value: 100,
+					color: "#FDB45C",
+					highlight: "#FFC870",
+					label: "Romance"
+				},
+				{
+					value: 40,
+					color: "#949FB1",
+					highlight: "#A8B3C5",
+					label: "Sci Fi"
+				},
+				{
+					value: 520,
+					color: "#4D5360",
+					highlight: "#616774",
+					label: "Children's Books"
+				},
+				{
+					value: 30,
+					color: "#FDB49C",
+					highlight: "#FDB49C",
+					label: "Etc."
+				}
+
+			];
+
+			window.onload = function(){
+				var ctx = document.getElementById("canvas1").getContext("2d");
+				window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {responsive : true});
+			};
+	</script>
+	
+	
+	<p>Short description stats go here.</p>    
+	
+	      
+	      
+	</div>
+	
+	
+	
+	
+	<div class="col-md-4" align="center" style="border-right: 1px solid #e9ede5";>
+	  
+	  <div class="list-group">
+	  <li class="list-group-item active" style=background:#4D5360;><b>Recently Viewed</b></li>
+	  <a href="#" class="list-group-item">The One And Only Ivan</a>
+	  <a href="#" class="list-group-item">Loving Rose</a>
+	  <a href="#" class="list-group-item">The Witch With No Name</a>
+	  <a href="#" class="list-group-item">The 6th Extinction</a>
+	  <a href="#" class="list-group-item">Heroes Are My Weakness</a>
+	  </div>
+	  
+	
+	
+	</div>
+	
+	
+	
+	
+	
+	<div class="col-md-4" align="center">
+	  
+	  <div class="list-group">
+	  <li class="list-group-item active" style=background:#4D5360;><b>Most Viewed</b></li>
+	  <a href="#" class="list-group-item">The One And Only Ivan</a>
+	  <a href="#" class="list-group-item">Loving Rose</a>
+	  <a href="#" class="list-group-item">The Witch With No Name</a>
+	  <a href="#" class="list-group-item">The 6th Extinction</a>
+	  <a href="#" class="list-group-item">Heroes Are My Weakness</a>
+	  </div>
+	  
+	 
+	</div>
+	
+	
+	
+	
+	
+	
+	</div>
+	</div>
+	
+	
+	
+  <!------ Author List ------>
+  
+       <hr> 
+           
+     </div>
+    </div>------>
+
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            /* 
+            **  Capture first isbn13 from a blob of text entered into text box
+            */
+            
+            var $editor = $('#Isbn13');
+            // very basic Isbn13 regex  - start with 97 followed by 11 digits
+            var rx = /97\d{11}/g;
+
+            /* Bind function to paste, keydown events */
+            $editor.on('paste, keydown', function () {
+                var $self = $(this);
+                setTimeout(function () {
+                    var $content = $self.val();
+                    var matches = $content.match(rx);
+                    console.log(matches);
+                    if (matches != null) {
+                        var firstisbn13 = _.first(matches);
+                        //console.log(firstisbn13);
+                        $editor.val(firstisbn13);
+                    }
+                }, 100);
+            });
+            
+        });
+    </script>
+
+}
+
